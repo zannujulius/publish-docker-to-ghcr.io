@@ -1,0 +1,19 @@
+name: Docker CI for GHCR
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code # Gets the code from the repo and put in the actions runner
+        uses: actions/checkout@v3
+
+      - name: Build and push the image
+        run: |
+          docker login --username ${{ secrets.GHCR_USERNAME }} --password ${{ secrets.GHCR_PAT }} ghcr.io
+          docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/test-image:latest .
+          docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/test-image:latest
